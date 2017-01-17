@@ -76,40 +76,26 @@ namespace RunAndJump
         {
             for (int currentColumn = 0; currentColumn <= columns; currentColumn++)
             {
-                var initialPoint = GetVerticalLineInitialPoint(currentColumn);
-                var finalPoint = GetVerticalLineFinalPoint(currentColumn, rows);
+                var initialPoint = GetGridLinePoint(0, currentColumn);
+                var finalPoint = GetGridLinePoint(rows, currentColumn);
                 Gizmos.DrawLine(initialPoint, finalPoint);
             }
-        }
-
-        private static Vector3 GetVerticalLineInitialPoint(int forColumn)
-        {
-            return new Vector3(forColumn * GridCellSize, 0, 0);
-        }
-
-        private static Vector3 GetVerticalLineFinalPoint(int forColumn, int forRow)
-        {
-            return new Vector3(forColumn * GridCellSize, forRow * GridCellSize, 0);
         }
 
         private static void DrawHorizontalGridLines(int rows, int columns)
         {
             for (int currentRow = 0; currentRow <= rows; currentRow++)
             {
-                var initialPoint = GetHorizontalLineInitialPoint(currentRow);
-                var finalPoint = GetHorizontalLineFinalPoint(currentRow, columns);
+                var initialPoint = GetGridLinePoint(currentRow, 0);
+                var finalPoint = GetGridLinePoint(currentRow, columns);
                 Gizmos.DrawLine(initialPoint, finalPoint);
             }
         }
 
-        private static Vector3 GetHorizontalLineInitialPoint(int forRow)
-        {
-            return new Vector3(0, forRow * GridCellSize, 0);
-        }
-
-        private static Vector3 GetHorizontalLineFinalPoint(int forRow, int forColumn)
+        private static Vector3 GetGridLinePoint(int forRow, int forColumn)
         {
             return new Vector3(forColumn * GridCellSize, forRow * GridCellSize, 0);
         }
+
     }
 }
