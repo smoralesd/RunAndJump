@@ -66,6 +66,15 @@ namespace RunAndJump
             Gizmos.color = oldColor;
         }
 
+        private void OnDrawGizmosSelected()
+        {
+            Color oldColor = Gizmos.color;
+            Gizmos.color = _selectedColor;
+            DrawGridGizmo(_totalRows, _totalColumns);
+            Gizmos.color = oldColor;
+        }
+
+
         private void DrawGridGizmo(int rows, int columns)
         {
             DrawVerticalGridLines(rows, columns);
