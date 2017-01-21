@@ -16,6 +16,8 @@ namespace RunAndJump
         private int _totalColumns = 25;
         [SerializeField]
         private int _totalRows = 10;
+        [SerializeField]
+        private LevelPiece[] _pieces;
 
         public const float GridCellSize = 1.28f;
 
@@ -35,6 +37,12 @@ namespace RunAndJump
             {
                 _drawer = value;
             }
+        }
+
+        public LevelPiece[] Pieces
+        {
+            get { return _pieces; }
+            set { _pieces = value; }
         }
 
         public int TotalTime
