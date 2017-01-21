@@ -19,8 +19,23 @@ namespace RunAndJump
 
         public const float GridCellSize = 1.28f;
 
-        private readonly Color _normalColor = Color.grey;
-        private readonly Color _selectedColor = Color.yellow;
+        private GizmosDrawer _drawer;
+
+        private GizmosDrawer Drawer
+        {
+            get {
+                if (_drawer == null)
+                {
+                    _drawer = new GizmosDrawer(this);
+                }
+
+                return _drawer;
+            }
+            set
+            {
+                _drawer = value;
+            }
+        }
 
         public int TotalTime
         {
@@ -60,55 +75,18 @@ namespace RunAndJump
 
         private void OnDrawGizmos()
         {
-            Color oldColor = Gizmos.color;
-            Gizmos.color = _normalColor;
-            DrawGridGizmo(_totalRows, _totalColumns);
-            Gizmos.color = oldColor;
+            Drawer.OnDrawGizmos();
         }
 
         private void OnDrawGizmosSelected()
         {
-            Color oldColor = Gizmos.color;
-            Gizmos.color = _selectedColor;
-            DrawGridGizmo(_totalRows, _totalColumns);
-            Gizmos.color = oldColor;
-        }
-
-        private void DrawGridGizmo(int rows, int columns)
-        {
-            DrawVerticalGridLines(rows, columns);
-            DrawHorizontalGridLines(rows, columns);
-        }
-
-        private static void DrawVerticalGridLines(int rows, int columns)
-        {
-            for (int currentColumn = 0; currentColumn <= columns; currentColumn++)
-            {
-                var initialPoint = GetGridLinePoint(0, currentColumn);
-                var finalPoint = GetGridLinePoint(rows, currentColumn);
-                Gizmos.DrawLine(initialPoint, finalPoint);
-            }
-        }
-
-        private static void DrawHorizontalGridLines(int rows, int columns)
-        {
-            for (int currentRow = 0; currentRow <= rows; currentRow++)
-            {
-                var initialPoint = GetGridLinePoint(currentRow, 0);
-                var finalPoint = GetGridLinePoint(currentRow, columns);
-                Gizmos.DrawLine(initialPoint, finalPoint);
-            }
-        }
-
-        private static Vector3 GetGridLinePoint(int forRow, int forColumn)
-        {
-            return new Vector3(forColumn * GridCellSize, forRow * GridCellSize, 0);
+            Drawer.OnDrawGizmosSelected();
         }
 
         public Vector3 WorldToGridCoordinates(Vector3 point)
         {
-            var xCoordinate = (int) ((point.x - transform.position.x) / GridCellSize);
-            var yCoordinate = (int) ((point.y - transform.position.y) / GridCellSize);
+            var xCoordinate = (int)((point.x - transform.position.x) / GridCellSize);
+            var yCoordinate = (int)((point.y - transform.position.y) / GridCellSize);
 
             return new Vector3(xCoordinate, yCoordinate, 0.0f);
         }
@@ -136,5 +114,72 @@ namespace RunAndJump
             return (0 <= col && col < _totalColumns) && (0 <= row && row < _totalRows);
         }
 
+        private class GizmosDrawer
+        {
+            private Level _level;
+
+            private readonly Color _normalColor = Color.grey;
+            private readonly Color _selectedColor = Color.yellow;
+
+            public GizmosDrawer(Level level)
+            {
+                _level = level;
+            }
+
+            public void OnDrawGizmos()
+            {
+                Color oldColor = Gizmos.color;
+                Gizmos.color = _normalColor;
+                DrawGrid(_level._totalRows, _level._totalColumns);
+                Gizmos.color = oldColor;
+            }
+
+            public void OnDrawGizmosSelected()
+            {
+                Color oldColor = Gizmos.color;
+                Gizmos.color = _selectedColor;
+                DrawGridFrame(_level._totalRows, _level._totalColumns);
+                Gizmos.color = oldColor;
+            }
+
+            private void DrawGridFrame(int rows, int columns)
+            {
+                DrawVerticalGridLines(0, 0, rows);
+                DrawVerticalGridLines(columns, columns, rows);
+                DrawHorizontalGridLines(0, 0, columns);
+                DrawHorizontalGridLines(rows, rows, columns);
+            }
+
+            private void DrawGrid(int rows, int columns)
+            {
+                DrawVerticalGridLines(0, columns, rows);
+                DrawHorizontalGridLines(0, rows, columns);
+            }
+
+            private static void DrawVerticalGridLines(int startColumn, int endColumn, int totalRows)
+            {
+                for (int currentColumn = startColumn; currentColumn <= endColumn; currentColumn++)
+                {
+                    var initialPoint = GetGridLinePoint(0, currentColumn);
+                    var finalPoint = GetGridLinePoint(totalRows, currentColumn);
+                    Gizmos.DrawLine(initialPoint, finalPoint);
+                }
+            }
+
+            private static void DrawHorizontalGridLines(int startRow, int endRow, int totalColumns)
+            {
+                for (int currentRow = startRow; currentRow <= endRow; currentRow++)
+                {
+                    var initialPoint = GetGridLinePoint(currentRow, 0);
+                    var finalPoint = GetGridLinePoint(currentRow, totalColumns);
+                    Gizmos.DrawLine(initialPoint, finalPoint);
+                }
+            }
+
+            private static Vector3 GetGridLinePoint(int forRow, int forColumn)
+            {
+                return new Vector3(forColumn * GridCellSize, forRow * GridCellSize, 0);
+            }
+        }
     }
 }

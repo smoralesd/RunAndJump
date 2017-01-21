@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace RunAndJump {
 	public partial class Level : MonoBehaviour {
