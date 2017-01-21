@@ -47,23 +47,34 @@ namespace RunAndJump.LevelCreator
         {
             EditorGUILayout.LabelField("Data", EditorStyles.boldLabel);
 
+            EditorGUILayout.BeginVertical("box");
+
             _myTarget.TotalTime = EditorGUILayout.IntField(" Total Time", Mathf.Max(0, _myTarget.TotalTime));
             _myTarget.Gravity = EditorGUILayout.FloatField(" Gravity", _myTarget.Gravity);
             _myTarget.Bgm = (AudioClip)EditorGUILayout.ObjectField(" Bgm", _myTarget.Bgm, typeof(AudioClip), false);
             _myTarget.Background = (Sprite)EditorGUILayout.ObjectField(" Background", _myTarget.Background, typeof(Sprite), false);
+
+            EditorGUILayout.EndVertical();
         }
 
         private void DrawLevelSizeGUI()
         {
             EditorGUILayout.LabelField("Size", EditorStyles.boldLabel);
 
+            EditorGUILayout.BeginHorizontal("box");
+            EditorGUILayout.BeginVertical();
+
             _newTotalRows = EditorGUILayout.IntField("Rows", Mathf.Max(1, _newTotalRows));
             _newTotalColumns = EditorGUILayout.IntField("Columns", Mathf.Max(1, _newTotalColumns));
+
+            EditorGUILayout.EndVertical();
+
+            EditorGUILayout.BeginVertical();
 
             var oldEnabled = GUI.enabled;
             GUI.enabled = _newTotalColumns != _myTarget.TotalColumns || _newTotalRows != _myTarget.TotalRows;
 
-            var buttonResize = GUILayout.Button("Resize", GUILayout.Height(2 * EditorGUIUtility.singleLineHeight));
+            var buttonResize = GUILayout.Button("Resize", GUILayout.Height(EditorGUIUtility.singleLineHeight));
 
             if (buttonResize)
             {
@@ -85,6 +96,9 @@ namespace RunAndJump.LevelCreator
             }
 
             GUI.enabled = oldEnabled;
+
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndHorizontal();
         }
 
         private void ResizeLevel()
