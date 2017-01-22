@@ -5,6 +5,7 @@ namespace RunAndJump
     public partial class Level : MonoBehaviour
     {
         [SerializeField]
+        [LevelCreator.Time]
         public int _totalTime = 60;
         [SerializeField]
         private float _gravity = -30;

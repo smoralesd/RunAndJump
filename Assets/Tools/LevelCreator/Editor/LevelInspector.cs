@@ -8,6 +8,9 @@ namespace RunAndJump.LevelCreator
     {
         private Level _myTarget;
 
+        private SerializedObject _mySerializedObject;
+        private SerializedProperty _serializedTotalTime;
+
         private int _newTotalRows;
         private int _newTotalColumns;
 
@@ -20,6 +23,9 @@ namespace RunAndJump.LevelCreator
 
         private void InitLevel()
         {
+            _mySerializedObject = new SerializedObject(_myTarget);
+            _serializedTotalTime = _mySerializedObject.FindProperty("_totalTime");
+
             if (_myTarget.Pieces == null || _myTarget.Pieces.Length == 0)
             {
                 _myTarget.Pieces = new LevelPiece[_myTarget.TotalRows * _myTarget.TotalColumns];
@@ -49,10 +55,10 @@ namespace RunAndJump.LevelCreator
 
             EditorGUILayout.BeginVertical("box");
 
-            _myTarget.TotalTime = EditorGUILayout.IntField(" Total Time", Mathf.Max(0, _myTarget.TotalTime));
-            _myTarget.Gravity = EditorGUILayout.FloatField(" Gravity", _myTarget.Gravity);
-            _myTarget.Bgm = (AudioClip)EditorGUILayout.ObjectField(" Bgm", _myTarget.Bgm, typeof(AudioClip), false);
-            _myTarget.Background = (Sprite)EditorGUILayout.ObjectField(" Background", _myTarget.Background, typeof(Sprite), false);
+            EditorGUILayout.PropertyField(_serializedTotalTime);
+            _myTarget.Gravity = EditorGUILayout.FloatField("Gravity", _myTarget.Gravity);
+            _myTarget.Bgm = (AudioClip)EditorGUILayout.ObjectField("Bgm", _myTarget.Bgm, typeof(AudioClip), false);
+            _myTarget.Background = (Sprite)EditorGUILayout.ObjectField("Background", _myTarget.Background, typeof(Sprite), false);
 
             EditorGUILayout.EndVertical();
         }
