@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System;
 
 namespace RunAndJump.LevelCreator
 {
@@ -42,7 +43,11 @@ namespace RunAndJump.LevelCreator
         {
             DrawLevelDataGUI();
             DrawLevelSizeGUI();
+            SetDirtyIfNeeded();
+        }
 
+        private void SetDirtyIfNeeded()
+        {
             if (GUI.changed)
             {
                 EditorUtility.SetDirty(_myTarget);
@@ -68,19 +73,57 @@ namespace RunAndJump.LevelCreator
             EditorGUILayout.LabelField("Size", EditorStyles.boldLabel);
 
             EditorGUILayout.BeginHorizontal("box");
+
+            DrawRowsAndColumnsData();
+            DrawButtons();
+
+            EditorGUILayout.EndHorizontal();
+        }
+
+        private void DrawRowsAndColumnsData()
+        {
             EditorGUILayout.BeginVertical();
 
             _newTotalRows = EditorGUILayout.IntField("Rows", Mathf.Max(1, _newTotalRows));
             _newTotalColumns = EditorGUILayout.IntField("Columns", Mathf.Max(1, _newTotalColumns));
 
             EditorGUILayout.EndVertical();
+        }
 
+        public void DrawButtons()
+        {
             EditorGUILayout.BeginVertical();
 
-            var oldEnabled = GUI.enabled;
-            GUI.enabled = _newTotalColumns != _myTarget.TotalColumns || _newTotalRows != _myTarget.TotalRows;
+            ExecuteAndPreserveGUIEnabled(() =>
+            {
+                GUI.enabled = _newTotalColumns != _myTarget.TotalColumns || _newTotalRows != _myTarget.TotalRows;
+                DrawResizeButton();
+                DrawResetButton();
+            });
 
-            var buttonResize = GUILayout.Button("Resize", GUILayout.Height(EditorGUIUtility.singleLineHeight));
+            EditorGUILayout.EndVertical();
+        }
+
+        public void ExecuteAndPreserveGUIEnabled(Action action)
+        {
+            var oldEnabled = GUI.enabled;
+            action();
+            GUI.enabled = oldEnabled;
+        }
+
+        private void DrawResetButton()
+        {
+            var buttonReset = GUILayout.Button("Reset");
+
+            if (buttonReset)
+            {
+                ResetResizeValues();
+            }
+        }
+
+        private void DrawResizeButton()
+        {
+            var buttonResize = GUILayout.Button("Resize");
 
             if (buttonResize)
             {
@@ -93,18 +136,6 @@ namespace RunAndJump.LevelCreator
                     ResizeLevel();
                 }
             }
-
-            var buttonReset = GUILayout.Button("Reset");
-
-            if (buttonReset)
-            {
-                ResetResizeValues();
-            }
-
-            GUI.enabled = oldEnabled;
-
-            EditorGUILayout.EndVertical();
-            EditorGUILayout.EndHorizontal();
         }
 
         private void ResizeLevel()
