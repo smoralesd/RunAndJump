@@ -236,6 +236,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c5f3df66c2003f42a845f358b461047, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  category: 0
-  itemName: 
-  inspectedScript: {fileID: 0}
+  category: 2
+  itemName: Angry Blob
+  inspectedScript: {fileID: 11500000, guid: f5c12fa9d761341c890b4585d9c4298a, type: 3}

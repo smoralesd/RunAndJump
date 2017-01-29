@@ -221,5 +221,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   category: 0
-  itemName: 
-  inspectedScript: {fileID: 0}
+  itemName: Timmy
+  inspectedScript: {fileID: 11500000, guid: a67784f635bbd4a0c9f9ebec9ed546aa, type: 3}
