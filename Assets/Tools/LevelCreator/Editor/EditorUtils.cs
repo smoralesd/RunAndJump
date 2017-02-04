@@ -1,8 +1,9 @@
-﻿using UnityEngine;
-using UnityEditor.SceneManagement;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
+
 using UnityEditor;
+using UnityEngine;
+using UnityEditor.SceneManagement;
 
 namespace RunAndJump.LevelCreator
 {
@@ -48,6 +49,20 @@ namespace RunAndJump.LevelCreator
             }
 
             return assetList;
+        }
+
+        public static List<T> GetListFromEnum<T>()
+        {
+            var result = new List<T>();
+
+            var enumValues = System.Enum.GetValues(typeof(T));
+
+            foreach (T value in enumValues)
+            {
+                result.Add(value);
+            }
+
+            return result;
         }
     }
 }
