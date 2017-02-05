@@ -287,6 +287,80 @@ namespace RunAndJump.LevelCreator
         private void HandleEvent()
         {
             HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
+
+            var camera = SceneView.currentDrawingSceneView.camera;
+            var mousePosition = Event.current.mousePosition;
+            mousePosition = new Vector2(mousePosition.x, camera.pixelHeight - mousePosition.y);
+
+            var worldPos = camera.ScreenToWorldPoint(mousePosition);
+            var gridPos = _myTarget.WorldToGridCoordinates(worldPos);
+            int col = (int)gridPos.x;
+            int row = (int)gridPos.y;
+
+            switch(_currentMode)
+            {
+                case Mode.Paint:
+                    if (IsDownOrDrag(Event.current))
+                    {
+                        Paint(col, row);
+                    }
+                    break;
+                case Mode.Edit:
+                    if (IsDown(Event.current))
+                    {
+                        Edit(col, row);
+                    }
+                    break;
+                case Mode.Erase:
+                    if (IsDownOrDrag(Event.current))
+                    {
+                        Erase(col, row);
+                    }
+                    break;
+                case Mode.View:
+                default:
+                    break;
+            }
         }
-    }
+
+        private bool IsDownOrDrag(Event e)
+        {
+            return e.type == EventType.MouseDown || e.type == EventType.MouseDrag;
+        }
+
+        private bool IsDown(Event e)
+        {
+            return e.type == EventType.MouseDown;
+        }
+
+        private void Paint(int col, int row)
+        {
+            if (!_myTarget.IsInsideGridBounds(col, row) || _pieceSelected == null)
+            {
+                return;
+            }
+
+            var pieceIndex = col + row * _myTarget.TotalColumns;
+            if (_myTarget.Pieces[pieceIndex] != null)
+            {
+                DestroyImmediate(_myTarget.Pieces[pieceIndex].gameObject);
+            }
+
+            var gObj = PrefabUtility.InstantiatePrefab(_pieceSelected.gameObject) as GameObject;
+            gObj.transform.parent = _myTarget.transform;
+            gObj.name = string.Format("[{0},{1}][{2}]", col, row, gObj.name);
+            gObj.transform.position = _myTarget.GridToWorldCoordinates(col, row);
+            _myTarget.Pieces[pieceIndex] = gObj.GetComponent<LevelPiece>();
+        }
+
+        private void Erase(int col, int row)
+        {
+            Debug.LogFormat("Erasing {0}, {1}", col, row);
+        }
+
+        private void Edit(int col, int row)
+        {
+            Debug.LogFormat("Editing {0}, {1}", col, row);
+        }
+    } 
 }
