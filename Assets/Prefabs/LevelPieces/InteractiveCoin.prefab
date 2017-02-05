@@ -161,4 +161,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: 1
   itemName: Coin
-  inspectedScript: {fileID: 11500000, guid: 788dbfd5a36b2432ba2cb6a9c5f1e27a, type: 3}
+  inspectedScript: {fileID: 11441004}

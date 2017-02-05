@@ -133,4 +133,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: 1
   itemName: Treasure
-  inspectedScript: {fileID: 11500000, guid: 3b39ae68074d646b8b668b13fa3e4b06, type: 3}
+  inspectedScript: {fileID: 11435638}

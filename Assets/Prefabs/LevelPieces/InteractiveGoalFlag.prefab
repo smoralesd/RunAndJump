@@ -133,4 +133,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: 0
   itemName: Goal Flag
-  inspectedScript: {fileID: 11500000, guid: 448b5519d529c42eba6e5abae8d91052, type: 3}
+  inspectedScript: {fileID: 11411222}

@@ -40,9 +40,9 @@ GameObject:
   - component: {fileID: 481614}
   - component: {fileID: 21281614}
   - component: {fileID: 9581614}
-  - component: {fileID: 11447308}
   - component: {fileID: 6172240}
   - component: {fileID: 5072240}
+  - component: {fileID: 11447308}
   - component: {fileID: 114259269484725460}
   m_Layer: 11
   m_Name: EnemyYellowFace
@@ -238,4 +238,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: 2
   itemName: Angry Blob
-  inspectedScript: {fileID: 11500000, guid: f5c12fa9d761341c890b4585d9c4298a, type: 3}
+  inspectedScript: {fileID: 11447308}

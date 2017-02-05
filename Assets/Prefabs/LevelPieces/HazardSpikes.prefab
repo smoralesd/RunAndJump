@@ -133,4 +133,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: 3
   itemName: Spikes
-  inspectedScript: {fileID: 11500000, guid: 91be457a3f6d04f9daab54041ea75f0a, type: 3}
+  inspectedScript: {fileID: 11488364}

@@ -134,4 +134,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: 0
   itemName: Sign
-  inspectedScript: {fileID: 11500000, guid: bdb9e18e386ee46b783b9763aa04ae57, type: 3}
+  inspectedScript: {fileID: 11433360}
