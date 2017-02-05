@@ -23,6 +23,9 @@ namespace RunAndJump.LevelCreator
         private const float ButtonWidth = 80;
         private const float ButtonHeight = 90;
 
+        public delegate void itemSelectedDelegate(PaletteItem item, Texture2D preview);
+        public static event itemSelectedDelegate ItemSelectedEvent;
+
         public void OnEnable()
         {
             if (_categories == null)
@@ -109,7 +112,22 @@ namespace RunAndJump.LevelCreator
                 rowCapacity,
                 GetGUIStyle());
 
+            SetSelectedItem(selectionGridIndex);
+
             GUILayout.EndScrollView();
+        }
+
+        private void SetSelectedItem(int index)
+        {
+            if (index != -1)
+            {
+                var selectedItem = _categorizedItems[_selectedCategory][index];
+
+                if (ItemSelectedEvent != null)
+                {
+                    ItemSelectedEvent(selectedItem, _previews[selectedItem]);
+                }
+            }
         }
 
         private GUIContent[] GetGUIContentsFromItems()
