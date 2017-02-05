@@ -15,11 +15,21 @@ namespace RunAndJump.LevelCreator
         private int _newTotalRows;
         private int _newTotalColumns;
 
+        private PaletteItem _itemSelected;
+        private Texture2D _itemPreview;
+        private LevelPiece _pieceSelected;
+
         private void OnEnable()
         {
             _myTarget = (Level)target;
             InitLevel();
             ResetResizeValues();
+            SubscribeEvents();
+        }
+
+        private void OnDisable()
+        {
+            UnsubscribeEvents();
         }
 
         private void InitLevel()
@@ -43,6 +53,8 @@ namespace RunAndJump.LevelCreator
         {
             DrawLevelDataGUI();
             DrawLevelSizeGUI();
+            DrawPieceSelectedGUI();
+
             SetDirtyIfNeeded();
         }
 
@@ -171,6 +183,41 @@ namespace RunAndJump.LevelCreator
             }
 
             return newPieces;
+        }
+
+        private void UpdateCurrentPieceInstance(PaletteItem item, Texture2D preview)
+        {
+            _itemSelected = item;
+            _itemPreview = preview;
+            _pieceSelected = item.GetComponent<LevelPiece>();
+            Repaint();
+        }
+
+        private void SubscribeEvents()
+        {
+            PaletteWindow.ItemSelectedEvent += new PaletteWindow.itemSelectedDelegate(UpdateCurrentPieceInstance);
+        }
+
+        private void UnsubscribeEvents()
+        {
+            PaletteWindow.ItemSelectedEvent -= new PaletteWindow.itemSelectedDelegate(UpdateCurrentPieceInstance);
+        }
+
+        private void DrawPieceSelectedGUI()
+        {
+            EditorGUILayout.LabelField("Piece Selected", EditorStyles.boldLabel);
+
+            if (_pieceSelected == null)
+            {
+                EditorGUILayout.HelpBox("No piece selected!", MessageType.Info);
+            }
+            else
+            {
+                EditorGUILayout.BeginHorizontal("box");
+                EditorGUILayout.LabelField(new GUIContent(_itemPreview), GUILayout.Height(40));
+                EditorGUILayout.LabelField(_itemSelected.itemName);
+                EditorGUILayout.EndHorizontal();
+            }
         }
     }
 }
