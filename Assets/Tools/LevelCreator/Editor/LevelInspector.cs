@@ -23,6 +23,8 @@ namespace RunAndJump.LevelCreator
         private Mode _selectedMode;
         private Mode _currentMode;
 
+        private PaletteItem _itemInspected;
+
         public enum Mode
         {
             View,
@@ -73,6 +75,7 @@ namespace RunAndJump.LevelCreator
             DrawLevelDataGUI();
             DrawLevelSizeGUI();
             DrawPieceSelectedGUI();
+            DrawInspectedItemGUI();
 
             SetDirtyIfNeeded();
         }
@@ -261,6 +264,28 @@ namespace RunAndJump.LevelCreator
             Handles.EndGUI();
         }
 
+        private void DrawInspectedItemGUI()
+        {
+            if (_currentMode != Mode.Edit)
+            {
+                return;
+            }
+
+            EditorGUILayout.LabelField("Piece Edited", EditorStyles.boldLabel);
+
+            if (_itemInspected != null)
+            {
+                EditorGUILayout.BeginVertical("box");
+                EditorGUILayout.LabelField("Name: " + _itemInspected.name);
+                CreateEditor(_itemInspected.inspectedScript).OnInspectorGUI();
+                EditorGUILayout.EndVertical();
+            }
+            else
+            {
+                EditorGUILayout.HelpBox("No piece to edit", MessageType.Info);
+            }
+        }
+
         private void HandleMode()
         {
             switch(_selectedMode)
@@ -279,6 +304,8 @@ namespace RunAndJump.LevelCreator
             if (_selectedMode != _currentMode)
             {
                 _currentMode = _selectedMode;
+                _itemInspected = null;
+                Repaint();
             }
 
             SceneView.currentDrawingSceneView.in2DMode = true;
@@ -367,9 +394,19 @@ namespace RunAndJump.LevelCreator
             }
         }
 
+
         private void Edit(int col, int row)
         {
-            Debug.LogFormat("Editing {0}, {1}", col, row);
+            if (!_myTarget.IsInsideGridBounds(col, row) || _myTarget.Pieces[col + row * _myTarget.TotalColumns] == null)
+            {
+                _itemInspected = null;
+            }
+            else
+            {
+                _itemInspected = _myTarget.Pieces[col + row * _myTarget.TotalColumns].GetComponent<PaletteItem>() as PaletteItem;
+            }
+
+            Repaint();
         }
     } 
 }
