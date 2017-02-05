@@ -355,7 +355,16 @@ namespace RunAndJump.LevelCreator
 
         private void Erase(int col, int row)
         {
-            Debug.LogFormat("Erasing {0}, {1}", col, row);
+            if (!_myTarget.IsInsideGridBounds(col, row) || _pieceSelected == null)
+            {
+                return;
+            }
+
+            var pieceIndex = col + row * _myTarget.TotalColumns;
+            if (_myTarget.Pieces[pieceIndex] != null)
+            {
+                DestroyImmediate(_myTarget.Pieces[pieceIndex].gameObject);
+            }
         }
 
         private void Edit(int col, int row)
