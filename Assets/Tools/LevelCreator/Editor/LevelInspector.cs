@@ -48,6 +48,7 @@ namespace RunAndJump.LevelCreator
         {
             DrawModeGUI();
             HandleMode();
+            HandleEvent();
         }
 
         private void InitLevel()
@@ -281,6 +282,11 @@ namespace RunAndJump.LevelCreator
             }
 
             SceneView.currentDrawingSceneView.in2DMode = true;
+        }
+
+        private void HandleEvent()
+        {
+            HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
         }
     }
 }
