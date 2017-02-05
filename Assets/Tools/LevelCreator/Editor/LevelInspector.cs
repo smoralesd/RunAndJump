@@ -47,6 +47,7 @@ namespace RunAndJump.LevelCreator
         private void OnSceneGUI()
         {
             DrawModeGUI();
+            HandleMode();
         }
 
         private void InitLevel()
@@ -257,6 +258,29 @@ namespace RunAndJump.LevelCreator
             GUILayout.EndArea();
 
             Handles.EndGUI();
+        }
+
+        private void HandleMode()
+        {
+            switch(_selectedMode)
+            {
+                case Mode.Paint:
+                case Mode.Edit:
+                case Mode.Erase:
+                    Tools.current = Tool.None;
+                    break;
+                case Mode.View:
+                default:
+                    Tools.current = Tool.View;
+                    break;
+            }
+
+            if (_selectedMode != _currentMode)
+            {
+                _currentMode = _selectedMode;
+            }
+
+            SceneView.currentDrawingSceneView.in2DMode = true;
         }
     }
 }
