@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System;
+using System.Collections.Generic;
 
 namespace RunAndJump.LevelCreator
 {
@@ -41,6 +42,11 @@ namespace RunAndJump.LevelCreator
         private void OnDisable()
         {
             UnsubscribeEvents();
+        }
+
+        private void OnSceneGUI()
+        {
+            DrawModeGUI();
         }
 
         private void InitLevel()
@@ -229,6 +235,28 @@ namespace RunAndJump.LevelCreator
                 EditorGUILayout.LabelField(_itemSelected.itemName);
                 EditorGUILayout.EndHorizontal();
             }
+        }
+
+        private void DrawModeGUI()
+        {
+            var modes = EditorUtils.GetListFromEnum<Mode>();
+            var modeLabels = new List<string>();
+
+            foreach (var mode in modes)
+            {
+                modeLabels.Add(mode.ToString());
+            }
+
+            Handles.BeginGUI();
+
+            GUILayout.BeginArea(new Rect(10f, 10f, 360, 40f));
+            _selectedMode = (Mode)GUILayout.Toolbar(
+                (int)_currentMode,
+                modeLabels.ToArray(),
+                GUILayout.ExpandHeight(true));
+            GUILayout.EndArea();
+
+            Handles.EndGUI();
         }
     }
 }
