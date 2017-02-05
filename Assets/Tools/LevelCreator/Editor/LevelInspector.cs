@@ -19,6 +19,17 @@ namespace RunAndJump.LevelCreator
         private Texture2D _itemPreview;
         private LevelPiece _pieceSelected;
 
+        private Mode _selectedMode;
+        private Mode _currentMode;
+
+        public enum Mode
+        {
+            View,
+            Paint,
+            Edit,
+            Erase
+        }
+
         private void OnEnable()
         {
             _myTarget = (Level)target;
