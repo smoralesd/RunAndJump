@@ -188,7 +188,7 @@ namespace RunAndJump.LevelCreator
                 for (int row = 0; row < _myTarget.TotalRows; ++row)
                 {
                     var targetIndex = column + row * _myTarget.TotalColumns;
-                    var targetPiece = _myTarget.Pieces[targetIndex];
+                    var targetPiece = _myTarget.GetPiece(column, row);
 
                     if (column < _newTotalColumns && row < _newTotalRows)
                     {
@@ -386,10 +386,9 @@ namespace RunAndJump.LevelCreator
                 return;
             }
 
-            var pieceIndex = col + row * _myTarget.TotalColumns;
-            if (_myTarget.Pieces[pieceIndex] != null)
+            if (_myTarget.GetPiece(col, row) != null)
             {
-                DestroyImmediate(_myTarget.Pieces[pieceIndex].gameObject);
+                DestroyImmediate(_myTarget.GetPiece(col, row).gameObject);
             }
 
             var gObj = PrefabUtility.InstantiatePrefab(_pieceSelected.gameObject) as GameObject;
@@ -397,7 +396,7 @@ namespace RunAndJump.LevelCreator
             gObj.name = string.Format("[{0},{1}][{2}]", col, row, gObj.name);
             gObj.transform.position = _myTarget.GridToWorldCoordinates(col, row);
             gObj.hideFlags = HideFlags.HideInHierarchy;
-            _myTarget.Pieces[pieceIndex] = gObj.GetComponent<LevelPiece>();
+            _myTarget.SetPiece(col, row, gObj.GetComponent<LevelPiece>());
         }
 
         private void Erase(int col, int row)
@@ -407,10 +406,9 @@ namespace RunAndJump.LevelCreator
                 return;
             }
 
-            var pieceIndex = col + row * _myTarget.TotalColumns;
-            if (_myTarget.Pieces[pieceIndex] != null)
+            if (_myTarget.GetPiece(col, row) != null)
             {
-                DestroyImmediate(_myTarget.Pieces[pieceIndex].gameObject);
+                DestroyImmediate(_myTarget.GetPiece(col, row).gameObject);
             }
         }
 
