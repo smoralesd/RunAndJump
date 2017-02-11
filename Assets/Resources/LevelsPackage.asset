@@ -20,4 +20,6 @@ MonoBehaviour:
     levelName: Leap of Faith
   - scene: {fileID: 102900000, guid: 6dc09aebffc8e444ea8e155d1cd575cb, type: 3}
     levelName: My Level
+  - scene: {fileID: 102900000, guid: dc006e363f14e044b90f16f5baeac81c, type: 3}
+    levelName: My Seconde Level
   hasChanges: 0

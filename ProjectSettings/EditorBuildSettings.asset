@@ -19,3 +19,5 @@ EditorBuildSettings:
     path: Assets/Levels/Leap_level.unity
   - enabled: 1
     path: Assets/Levels/MyLevel_level.unity
+  - enabled: 1
+    path: Assets/Levels/MySecondLevel_level.unity
