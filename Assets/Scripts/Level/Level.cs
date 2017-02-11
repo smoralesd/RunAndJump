@@ -26,7 +26,8 @@ namespace RunAndJump
 
         private GizmosDrawer Drawer
         {
-            get {
+            get
+            {
                 if (_drawer == null)
                 {
                     _drawer = new GizmosDrawer(this);
@@ -121,6 +122,11 @@ namespace RunAndJump
         public bool IsInsideGridBounds(int col, int row)
         {
             return (0 <= col && col < _totalColumns) && (0 <= row && row < _totalRows);
+        }
+
+        public LevelPiece GetPiece(int col, int row)
+        {
+            return Pieces[col + row * TotalColumns];
         }
 
         private class GizmosDrawer

@@ -25,6 +25,9 @@ namespace RunAndJump.LevelCreator
 
         private PaletteItem _itemInspected;
 
+        private int _originalPosX;
+        private int _originalPosY;
+
         public enum Mode
         {
             View,
@@ -57,6 +60,7 @@ namespace RunAndJump.LevelCreator
         {
             _mySerializedObject = new SerializedObject(_myTarget);
             _serializedTotalTime = _mySerializedObject.FindProperty("_totalTime");
+            _myTarget.transform.hideFlags = HideFlags.NotEditable;
 
             if (_myTarget.Pieces == null || _myTarget.Pieces.Length == 0)
             {
@@ -288,7 +292,7 @@ namespace RunAndJump.LevelCreator
 
         private void HandleMode()
         {
-            switch(_selectedMode)
+            switch (_selectedMode)
             {
                 case Mode.Paint:
                 case Mode.Edit:
@@ -324,7 +328,7 @@ namespace RunAndJump.LevelCreator
             int col = (int)gridPos.x;
             int row = (int)gridPos.y;
 
-            switch(_currentMode)
+            switch (_currentMode)
             {
                 case Mode.Paint:
                     if (IsDownOrDrag(Event.current))
@@ -336,6 +340,25 @@ namespace RunAndJump.LevelCreator
                     if (IsDown(Event.current))
                     {
                         Edit(col, row);
+                        _originalPosX = col;
+                        _originalPosY = row;
+                    }
+
+                    if ((Event.current.type == EventType.MouseUp
+                        || Event.current.type == EventType.Ignore)
+                        && _itemInspected != null)
+                    {
+                        Move();
+                    }
+
+                    if (_itemInspected != null)
+                    {
+                        _itemInspected.transform.position = Handles.FreeMoveHandle(
+                            _itemInspected.transform.position,
+                            _itemInspected.transform.rotation,
+                            Level.GridCellSize / 2,
+                            Level.GridCellSize / 2 * Vector3.one,
+                            Handles.RectangleCap);
                     }
                     break;
                 case Mode.Erase:
@@ -377,6 +400,7 @@ namespace RunAndJump.LevelCreator
             gObj.transform.parent = _myTarget.transform;
             gObj.name = string.Format("[{0},{1}][{2}]", col, row, gObj.name);
             gObj.transform.position = _myTarget.GridToWorldCoordinates(col, row);
+            gObj.hideFlags = HideFlags.HideInHierarchy;
             _myTarget.Pieces[pieceIndex] = gObj.GetComponent<LevelPiece>();
         }
 
@@ -394,7 +418,6 @@ namespace RunAndJump.LevelCreator
             }
         }
 
-
         private void Edit(int col, int row)
         {
             if (!_myTarget.IsInsideGridBounds(col, row) || _myTarget.Pieces[col + row * _myTarget.TotalColumns] == null)
@@ -408,5 +431,43 @@ namespace RunAndJump.LevelCreator
 
             Repaint();
         }
-    } 
+
+        private void Move()
+        {
+            var gridPoint = _myTarget.WorldToGridCoordinates(_itemInspected.transform.position);
+            var newPosX = (int)gridPoint.x;
+            var newPosY = (int)gridPoint.y;
+
+            if (IsSameThanOriginalPosition(newPosX, newPosY))
+            {
+                return;
+            }
+
+            if (IsValidNewPosition(newPosX, newPosY))
+            {
+                _itemInspected.transform.position = _myTarget.GridToWorldCoordinates(_originalPosX, _originalPosY);
+            }
+            else
+            {
+                UpdateInspectedItemPosition(newPosX, newPosY);
+            }
+        }
+
+        private void UpdateInspectedItemPosition(int newPosX, int newPosY)
+        {
+            _myTarget.Pieces[_originalPosX + _originalPosY * _myTarget.TotalColumns] = null;
+            _myTarget.Pieces[newPosX + newPosY * _myTarget.TotalColumns] = _itemInspected.GetComponent<LevelPiece>();
+            _myTarget.Pieces[newPosX + newPosY * _myTarget.TotalColumns].transform.position = _myTarget.GridToWorldCoordinates(newPosX, newPosY);
+        }
+
+        private bool IsSameThanOriginalPosition(int newPosX, int newPosY)
+        {
+            return newPosX == _originalPosX && newPosY == _originalPosY;
+        }
+
+        private bool IsValidNewPosition(int newPosX, int newPosY)
+        {
+            return !_myTarget.IsInsideGridBounds(newPosX, newPosY) || _myTarget.Pieces[newPosX + newPosY * _myTarget.TotalColumns] != null;
+        }
+    }
 }
