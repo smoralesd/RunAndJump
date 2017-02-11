@@ -325,6 +325,14 @@ namespace RunAndJump.LevelCreator
                             Level.GridCellSize / 2,
                             Level.GridCellSize / 2 * Vector3.one,
                             Handles.RectangleCap);
+
+                        Handles.color = Handles.xAxisColor;
+                        Handles.ArrowCap(0, _itemInspected.transform.position, _itemInspected.transform.rotation * Quaternion.Euler(0, 90, 0), 1);
+                        Handles.ArrowCap(0, _itemInspected.transform.position, _itemInspected.transform.rotation * Quaternion.Euler(0, -90, 0), 1);
+
+                        Handles.color = Handles.yAxisColor;
+                        Handles.ArrowCap(0, _itemInspected.transform.position, _itemInspected.transform.rotation * Quaternion.Euler(90, 0, 0), 1);
+                        Handles.ArrowCap(0, _itemInspected.transform.position, _itemInspected.transform.rotation * Quaternion.Euler(-90, 0, 0), 1);
                     }
                     break;
                 case Mode.Erase:
