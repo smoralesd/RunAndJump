@@ -93,35 +93,42 @@ namespace RunAndJump
             Drawer.OnDrawGizmosSelected();
         }
 
-        public Vector3 WorldToGridCoordinates(Vector3 point)
+        public void InitializePieces()
         {
+            if (Pieces == null || Pieces.Length == 0)
+            {
+                Pieces = new LevelPiece[TotalRows * TotalColumns];
+            }
+        }
+
+        public Vector2 WorldToGridCoordinates(Vector3 point) {
             var xCoordinate = (int)((point.x - transform.position.x) / GridCellSize);
             var yCoordinate = (int)((point.y - transform.position.y) / GridCellSize);
 
-            return new Vector3(xCoordinate, yCoordinate, 0.0f);
+            return new Vector2(xCoordinate, yCoordinate);
         }
 
-        public Vector3 GridToWorldCoordinates(int column, int row)
+        public Vector2 GridToWorldCoordinates(int column, int row)
         {
             var xCoordinate = transform.position.x + (column * GridCellSize + GridCellSize / 2.0f);
             var yCoordinate = transform.position.y + (row * GridCellSize + GridCellSize / 2.0f);
 
-            return new Vector3(xCoordinate, yCoordinate, 0.0f);
+            return new Vector2(xCoordinate, yCoordinate);
         }
 
-        public bool IsInsideGridBounds(Vector3 point)
+        public bool IsInsideGridBounds(Vector2 point)
         {
-            float minX = transform.position.x;
-            float maxX = minX + _totalColumns * GridCellSize;
-            float minY = transform.position.y;
-            float maxY = minY + _totalRows * GridCellSize;
-
-            return (minX <= point.x && point.x <= maxX) && (minY <= point.y && point.y <= maxY);
+            return IsInsideGridBounds((int)point.x, (int)point.y);
         }
 
         public bool IsInsideGridBounds(int col, int row)
         {
             return (0 <= col && col < _totalColumns) && (0 <= row && row < _totalRows);
+        }
+
+        public void SetPiece(int col, int row, LevelPiece newPiece)
+        {
+            Pieces[col + row * TotalColumns] = newPiece;
         }
 
         public LevelPiece GetPiece(int col, int row)

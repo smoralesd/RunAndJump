@@ -61,11 +61,7 @@ namespace RunAndJump.LevelCreator
             _mySerializedObject = new SerializedObject(_myTarget);
             _serializedTotalTime = _mySerializedObject.FindProperty("_totalTime");
             _myTarget.transform.hideFlags = HideFlags.NotEditable;
-
-            if (_myTarget.Pieces == null || _myTarget.Pieces.Length == 0)
-            {
-                _myTarget.Pieces = new LevelPiece[_myTarget.TotalRows * _myTarget.TotalColumns];
-            }
+            _myTarget.InitializePieces();
         }
 
         private void ResetResizeValues()
@@ -420,13 +416,13 @@ namespace RunAndJump.LevelCreator
 
         private void Edit(int col, int row)
         {
-            if (!_myTarget.IsInsideGridBounds(col, row) || _myTarget.Pieces[col + row * _myTarget.TotalColumns] == null)
+            if (!_myTarget.IsInsideGridBounds(col, row) || _myTarget.GetPiece(col, row) == null)
             {
                 _itemInspected = null;
             }
             else
             {
-                _itemInspected = _myTarget.Pieces[col + row * _myTarget.TotalColumns].GetComponent<PaletteItem>() as PaletteItem;
+                _itemInspected = _myTarget.GetPiece(col, row).GetComponent<PaletteItem>() as PaletteItem;
             }
 
             Repaint();
@@ -455,9 +451,11 @@ namespace RunAndJump.LevelCreator
 
         private void UpdateInspectedItemPosition(int newPosX, int newPosY)
         {
-            _myTarget.Pieces[_originalPosX + _originalPosY * _myTarget.TotalColumns] = null;
-            _myTarget.Pieces[newPosX + newPosY * _myTarget.TotalColumns] = _itemInspected.GetComponent<LevelPiece>();
-            _myTarget.Pieces[newPosX + newPosY * _myTarget.TotalColumns].transform.position = _myTarget.GridToWorldCoordinates(newPosX, newPosY);
+            _myTarget.SetPiece(_originalPosX, _originalPosY, null);
+
+            var newPiece = _itemInspected.GetComponent<LevelPiece>();
+            newPiece.transform.position = _myTarget.GridToWorldCoordinates(newPosX, newPosY);
+            _myTarget.SetPiece(newPosX, newPosY, newPiece);
         }
 
         private bool IsSameThanOriginalPosition(int newPosX, int newPosY)
@@ -467,7 +465,7 @@ namespace RunAndJump.LevelCreator
 
         private bool IsValidNewPosition(int newPosX, int newPosY)
         {
-            return !_myTarget.IsInsideGridBounds(newPosX, newPosY) || _myTarget.Pieces[newPosX + newPosY * _myTarget.TotalColumns] != null;
+            return !_myTarget.IsInsideGridBounds(newPosX, newPosY) || _myTarget.GetPiece(newPosX, newPosY) != null;
         }
     }
 }
