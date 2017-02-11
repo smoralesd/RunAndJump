@@ -41,12 +41,6 @@ namespace RunAndJump
             }
         }
 
-        public LevelPiece[] Pieces
-        {
-            get { return _pieces; }
-            set { _pieces = value; }
-        }
-
         public int TotalTime
         {
             get { return _totalTime; }
@@ -95,10 +89,39 @@ namespace RunAndJump
 
         public void InitializePieces()
         {
-            if (Pieces == null || Pieces.Length == 0)
+            if (_pieces == null || _pieces.Length == 0)
             {
-                Pieces = new LevelPiece[TotalRows * TotalColumns];
+                _pieces = new LevelPiece[TotalRows * TotalColumns];
             }
+        }
+
+        public void ResizePiecesMatrix(int newTotalColumns, int newTotalRows)
+        {
+            var newPieces = new LevelPiece[newTotalRows * newTotalColumns];
+
+            for (int column = 0; column < TotalColumns; ++column)
+            {
+                for (int row = 0; row < TotalRows; ++row)
+                {
+                    var targetPiece = GetPiece(column, row);
+
+                    if (column < newTotalColumns && row < newTotalRows)
+                    {
+                        newPieces[column + row * newTotalColumns] = targetPiece;
+                    }
+                    else
+                    {
+                        if (targetPiece != null)
+                        {
+                            DestroyImmediate(targetPiece.gameObject);
+                        }
+                    }
+                }
+            }
+
+            _pieces = newPieces;
+            TotalColumns = newTotalColumns;
+            TotalRows = newTotalRows;
         }
 
         public Vector2 WorldToGridCoordinates(Vector3 point) {
@@ -128,12 +151,12 @@ namespace RunAndJump
 
         public void SetPiece(int col, int row, LevelPiece newPiece)
         {
-            Pieces[col + row * TotalColumns] = newPiece;
+            _pieces[col + row * TotalColumns] = newPiece;
         }
 
         public LevelPiece GetPiece(int col, int row)
         {
-            return Pieces[col + row * TotalColumns];
+            return _pieces[col + row * TotalColumns];
         }
 
         private class GizmosDrawer

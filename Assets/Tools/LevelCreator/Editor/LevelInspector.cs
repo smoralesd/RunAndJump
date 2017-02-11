@@ -174,37 +174,7 @@ namespace RunAndJump.LevelCreator
 
         private void ResizeLevel()
         {
-            _myTarget.Pieces = CreateNewPieces();
-            _myTarget.TotalColumns = _newTotalColumns;
-            _myTarget.TotalRows = _newTotalRows;
-        }
-
-        private LevelPiece[] CreateNewPieces()
-        {
-            LevelPiece[] newPieces = new LevelPiece[_newTotalRows * _newTotalColumns];
-
-            for (int column = 0; column < _myTarget.TotalColumns; ++column)
-            {
-                for (int row = 0; row < _myTarget.TotalRows; ++row)
-                {
-                    var targetIndex = column + row * _myTarget.TotalColumns;
-                    var targetPiece = _myTarget.GetPiece(column, row);
-
-                    if (column < _newTotalColumns && row < _newTotalRows)
-                    {
-                        newPieces[column + row * _newTotalColumns] = targetPiece;
-                    }
-                    else
-                    {
-                        if (targetPiece != null)
-                        {
-                            DestroyImmediate(targetPiece.gameObject);
-                        }
-                    }
-                }
-            }
-
-            return newPieces;
+            _myTarget.ResizePiecesMatrix(_newTotalColumns, _newTotalRows);
         }
 
         private void UpdateCurrentPieceInstance(PaletteItem item, Texture2D preview)
