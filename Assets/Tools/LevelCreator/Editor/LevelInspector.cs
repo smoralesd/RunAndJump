@@ -291,55 +291,17 @@ namespace RunAndJump.LevelCreator
 
             var worldPos = camera.ScreenToWorldPoint(mousePosition);
             var gridPos = _myTarget.WorldToGridCoordinates(worldPos);
-            int col = (int)gridPos.x;
-            int row = (int)gridPos.y;
 
             switch (_currentMode)
             {
                 case Mode.Paint:
-                    if (IsDownOrDrag(Event.current))
-                    {
-                        Paint(col, row);
-                    }
+                    Paint(Event.current, gridPos);
                     break;
                 case Mode.Edit:
-                    if (IsDown(Event.current))
-                    {
-                        Edit(col, row);
-                        _originalPosX = col;
-                        _originalPosY = row;
-                    }
-
-                    if ((Event.current.type == EventType.MouseUp
-                        || Event.current.type == EventType.Ignore)
-                        && _itemInspected != null)
-                    {
-                        Move();
-                    }
-
-                    if (_itemInspected != null)
-                    {
-                        _itemInspected.transform.position = Handles.FreeMoveHandle(
-                            _itemInspected.transform.position,
-                            _itemInspected.transform.rotation,
-                            Level.GridCellSize / 2,
-                            Level.GridCellSize / 2 * Vector3.one,
-                            Handles.RectangleCap);
-
-                        Handles.color = Handles.xAxisColor;
-                        Handles.ArrowCap(0, _itemInspected.transform.position, _itemInspected.transform.rotation * Quaternion.Euler(0, 90, 0), 1);
-                        Handles.ArrowCap(0, _itemInspected.transform.position, _itemInspected.transform.rotation * Quaternion.Euler(0, -90, 0), 1);
-
-                        Handles.color = Handles.yAxisColor;
-                        Handles.ArrowCap(0, _itemInspected.transform.position, _itemInspected.transform.rotation * Quaternion.Euler(90, 0, 0), 1);
-                        Handles.ArrowCap(0, _itemInspected.transform.position, _itemInspected.transform.rotation * Quaternion.Euler(-90, 0, 0), 1);
-                    }
+                    Edit(Event.current, gridPos);
                     break;
                 case Mode.Erase:
-                    if (IsDownOrDrag(Event.current))
-                    {
-                        Erase(col, row);
-                    }
+                    Erase(Event.current, gridPos);
                     break;
                 case Mode.View:
                 default:
@@ -355,6 +317,16 @@ namespace RunAndJump.LevelCreator
         private bool IsDown(Event e)
         {
             return e.type == EventType.MouseDown;
+        }
+
+        private void Paint(Event e, Vector2 point)
+        {
+            if (!IsDownOrDrag(e))
+            {
+                return;
+            }
+
+            Paint((int)point.x, (int)point.y);
         }
 
         private void Paint(int col, int row)
@@ -377,6 +349,16 @@ namespace RunAndJump.LevelCreator
             _myTarget.SetPiece(col, row, gObj.GetComponent<LevelPiece>());
         }
 
+        private void Erase(Event e, Vector2 point)
+        {
+            if (!IsDownOrDrag(e))
+            {
+                return;
+            }
+
+            Erase((int)point.x, (int)point.y);
+        }
+
         private void Erase(int col, int row)
         {
             if (!_myTarget.IsInsideGridBounds(col, row) || _pieceSelected == null)
@@ -390,7 +372,42 @@ namespace RunAndJump.LevelCreator
             }
         }
 
-        private void Edit(int col, int row)
+        private void Edit(Event e, Vector2 point)
+        {
+            if (IsDown(e))
+            {
+                UpdateInspectedItem((int)point.x, (int)point.y);
+                _originalPosX = (int)point.x;
+                _originalPosY = (int)point.y;
+            }
+
+            if ((e.type == EventType.MouseUp
+                || e.type == EventType.Ignore)
+                && _itemInspected != null)
+            {
+                Move();
+            }
+
+            if (_itemInspected != null)
+            {
+                _itemInspected.transform.position = Handles.FreeMoveHandle(
+                    _itemInspected.transform.position,
+                    _itemInspected.transform.rotation,
+                    Level.GridCellSize / 2,
+                    Level.GridCellSize / 2 * Vector3.one,
+                    Handles.RectangleCap);
+
+                Handles.color = Handles.xAxisColor;
+                Handles.ArrowCap(0, _itemInspected.transform.position, _itemInspected.transform.rotation * Quaternion.Euler(0, 90, 0), 1);
+                Handles.ArrowCap(0, _itemInspected.transform.position, _itemInspected.transform.rotation * Quaternion.Euler(0, -90, 0), 1);
+
+                Handles.color = Handles.yAxisColor;
+                Handles.ArrowCap(0, _itemInspected.transform.position, _itemInspected.transform.rotation * Quaternion.Euler(90, 0, 0), 1);
+                Handles.ArrowCap(0, _itemInspected.transform.position, _itemInspected.transform.rotation * Quaternion.Euler(-90, 0, 0), 1);
+            }
+        }
+
+        private void UpdateInspectedItem(int col, int row)
         {
             if (!_myTarget.IsInsideGridBounds(col, row) || _myTarget.GetPiece(col, row) == null)
             {
