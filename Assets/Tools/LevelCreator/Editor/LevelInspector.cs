@@ -291,17 +291,19 @@ namespace RunAndJump.LevelCreator
 
             var worldPos = camera.ScreenToWorldPoint(mousePosition);
             var gridPos = _myTarget.WorldToGridCoordinates(worldPos);
+            int col = (int)gridPos.x;
+            int row = (int)gridPos.y;
 
             switch (_currentMode)
             {
                 case Mode.Paint:
-                    Paint(Event.current, gridPos);
+                    PaintLevelPiece(Event.current, col, row);
                     break;
                 case Mode.Edit:
-                    Edit(Event.current, gridPos);
+                    EditLevelPiece(Event.current, col, row);
                     break;
                 case Mode.Erase:
-                    Erase(Event.current, gridPos);
+                    EraseLevelPiece(Event.current, col, row);
                     break;
                 case Mode.View:
                 default:
@@ -319,18 +321,13 @@ namespace RunAndJump.LevelCreator
             return e.type == EventType.MouseDown;
         }
 
-        private void Paint(Event e, Vector2 point)
+        private void PaintLevelPiece(Event e, int col, int row)
         {
             if (!IsDownOrDrag(e))
             {
                 return;
             }
 
-            Paint((int)point.x, (int)point.y);
-        }
-
-        private void Paint(int col, int row)
-        {
             if (!_myTarget.IsInsideGridBounds(col, row) || _pieceSelected == null)
             {
                 return;
@@ -349,18 +346,13 @@ namespace RunAndJump.LevelCreator
             _myTarget.SetPiece(col, row, gObj.GetComponent<LevelPiece>());
         }
 
-        private void Erase(Event e, Vector2 point)
+        private void EraseLevelPiece(Event e, int col, int row)
         {
             if (!IsDownOrDrag(e))
             {
                 return;
             }
 
-            Erase((int)point.x, (int)point.y);
-        }
-
-        private void Erase(int col, int row)
-        {
             if (!_myTarget.IsInsideGridBounds(col, row) || _pieceSelected == null)
             {
                 return;
@@ -372,13 +364,13 @@ namespace RunAndJump.LevelCreator
             }
         }
 
-        private void Edit(Event e, Vector2 point)
+        private void EditLevelPiece(Event e, int col, int row)
         {
             if (IsDown(e))
             {
-                UpdateInspectedItem((int)point.x, (int)point.y);
-                _originalPosX = (int)point.x;
-                _originalPosY = (int)point.y;
+                UpdateInspectedItem(col, row);
+                _originalPosX = col;
+                _originalPosY = row;
             }
 
             if ((e.type == EventType.MouseUp
